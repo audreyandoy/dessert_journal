@@ -4,6 +4,8 @@ class Dessert(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String, nullable=False)
     description = db.Column(db.String)
+    reviews = db.relationship("Review", back_populates="dessert")
+
 
     def to_dict(self):
         return {

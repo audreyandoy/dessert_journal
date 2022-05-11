@@ -74,34 +74,46 @@ def delete_one_dessert(id):
     db.session.commit()
     return jsonify(f"Dessert {dessert.id} successfully deleted"), 200
 
+@desserts_bp.route("/<id>/reviews", methods=["GET"])
+def read_all_reviews_for_dessert(id):
+    try:
+        id = int(id)
+    except ValueError:
+        abort(make_response({"message": f"dessert {id} is invalid"}, 400))
+        
+    dessert = Dessert.query.get(id)
+    
+    if not dessert:
+        return abort(make_response({"message": f"dessert {id} not found"}, 404))
+
+    dessert_reviews = [review.to_dict() for review in dessert.reviews]
+    return jsonify(dessert_reviews)
+
+
+
 ##################################################
 #               Review Routes                    #
 ##################################################
 
 reviews_bp = Blueprint("reviews_bp", __name__, url_prefix="/reviews")
-
 @reviews_bp.route("", methods=["POST"])
-def create_review():
+def create_dessert_review():
     request_body = request.get_json()
-
-    # guard clause
-    if "description" not in request_body or "rating" not in request_body:
-        return jsonify("Invalid Request"), 400
-
     new_review = Review(
         description = request_body["description"],
         rating = request_body["rating"],
+        dessert_id = request_body["dessert_id"],
         dateTime = datetime.utcnow()
     )
-
     db.session.add(new_review)
     db.session.commit()
-    
-    return jsonify(f"{new_review.description} has been successfully created"), 201
+    return jsonify(f"{new_review.description} for Dessert {request_body['dessert_id']} has been successfully created"), 201
+
 
 @reviews_bp.route("", methods=["GET"])
 def read_all_reviews():
     reviews = Review.query.all()
-    reviews_response = [ review.to_dict() for review in reviews]
+    reviews_response = [review.to_dict() for review in reviews]
     print(reviews)
     return jsonify(reviews_response), 200
+
