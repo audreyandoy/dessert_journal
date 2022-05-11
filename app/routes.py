@@ -1,6 +1,8 @@
 from flask import Blueprint, json, jsonify, request, abort, make_response
 from app.models.dessert import Dessert
+from app.models.review import Review
 from app import db 
+from datetime import datetime
 
 desserts_bp = Blueprint("desserts_bp", __name__, url_prefix="/desserts")
 
@@ -80,4 +82,26 @@ reviews_bp = Blueprint("reviews_bp", __name__, url_prefix="/reviews")
 
 @reviews_bp.route("", methods=["POST"])
 def create_review():
-    pass
+    request_body = request.get_json()
+
+    # guard clause
+    if "description" not in request_body or "rating" not in request_body:
+        return jsonify("Invalid Request"), 400
+
+    new_review = Review(
+        description = request_body["description"],
+        rating = request_body["rating"],
+        dateTime = datetime.utcnow()
+    )
+
+    db.session.add(new_review)
+    db.session.commit()
+    
+    return jsonify(f"{new_review.rating} has been successfully created"), 201
+
+@reviews_bp.route("", methods=["POST"])
+def read_all_reviews():
+    reviews = Review.query.all()
+    reviews_response = [ review.to_dict() for review in reviews]
+    print(reviews)
+    return jsonify(reviews_response), 200

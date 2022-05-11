@@ -16,4 +16,4 @@ class Dessert(db.Model):
         self.name = req_body["name"]
         self.description = req_body["description"]
 
-    #include way to refactor using a class method
+    #include way to use a class method to create a dessert

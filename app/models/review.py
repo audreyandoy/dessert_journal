@@ -1,5 +1,6 @@
 from app import db
 class Review(db.Model):
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     description = db.Column(db.String)
     rating = db.Column(db.String)
     dateTime = db.Column(db.DateTime)
@@ -8,7 +9,7 @@ class Review(db.Model):
         return {
             "description": self.description,
             "rating": self.rating,
-            "dateTime": self.dateTime
+            "datetime": self.dateTime
         }
 
     
