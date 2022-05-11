@@ -10,10 +10,11 @@ migrate = Migrate(compare_type=True)
 def create_app(test_config=None):
     app = Flask(__name__)
 
+    #Consider commenting these two out to discuss database connection
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://postgres:postgres@localhost:5432/dessert_journal'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://postgres:postgres@localhost:5432/desserts_journal'
     
-    # new new, bring up during optional session
+    # Bring up during optional session, used to see what SQL commands SQLAlchemy is using
     app.config['SQLALCHEMY_ECHO'] = True
 
     # Import models here
