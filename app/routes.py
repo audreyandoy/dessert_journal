@@ -97,9 +97,9 @@ def create_review():
     db.session.add(new_review)
     db.session.commit()
     
-    return jsonify(f"{new_review.rating} has been successfully created"), 201
+    return jsonify(f"{new_review.description} has been successfully created"), 201
 
-@reviews_bp.route("", methods=["POST"])
+@reviews_bp.route("", methods=["GET"])
 def read_all_reviews():
     reviews = Review.query.all()
     reviews_response = [ review.to_dict() for review in reviews]
