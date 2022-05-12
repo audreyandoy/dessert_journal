@@ -1,8 +1,8 @@
-"""creating desserts
+"""adding dessert
 
-Revision ID: 3b5aa2d0b2f6
+Revision ID: 1bec2636da85
 Revises: 
-Create Date: 2022-05-10 19:25:36.523638
+Create Date: 2022-05-11 13:26:11.742226
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '3b5aa2d0b2f6'
+revision = '1bec2636da85'
 down_revision = None
 branch_labels = None
 depends_on = None
