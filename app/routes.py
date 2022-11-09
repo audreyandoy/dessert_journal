@@ -4,19 +4,15 @@ from app import db
 
 desserts_bp = Blueprint("desserts_bp", __name__, url_prefix="/desserts")
 
+def validate_req_body(body):
+    if "name" not in body or "description" not in body:
+        return abort(make_response(jsonify("Invalid Request"), 400))
+
 @desserts_bp.route("", methods=["POST"])
 def create_dessert():
-    request_body = request.get_json()
-
-    # guard clause
-    if "name" not in request_body or "description" not in request_body:
-        return jsonify("Invalid Request"), 400
-
-    new_dessert = Dessert(
-        name = request_body["name"],
-        description = request_body["description"]
-    )
-
+    req_body = request.get_json()
+    validate_req_body(req_body)
+    new_dessert = Dessert.from_dict(req_body)
     db.session.add(new_dessert)
     db.session.commit()
     
@@ -26,7 +22,6 @@ def create_dessert():
 def read_all_desserts():
     desserts = Dessert.query.all()
     desserts_response = [ dessert.to_dict() for dessert in desserts]
-    print(desserts)
     return jsonify(desserts_response), 200
 
 @desserts_bp.route("/<id>", methods=["GET"])
@@ -41,7 +36,11 @@ def read_one_dessert(id):
     if not dessert:
         return abort(make_response({"message": f"dessert {id} not found"}, 404))
 
-    return dessert.to_dict()
+    return {
+            "id": dessert.id,
+            "name": dessert.name,
+            "description": dessert.description
+        }
 
 @desserts_bp.route("/<id>", methods=["PUT"])
 def update_one_dessert(id):
